@@ -1,0 +1,57 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: dubbo-provider
+  namespace: cncf
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: dubbo-provider
+    spec:
+      containers:
+      - image: docker.io/yangkai/provider-old
+        resources:
+          limits:
+            cpu: 200m
+            memory: 200Mi
+          requests:
+            cpu: 100m
+            memory: 100Mi
+        imagePullPolicy: IfNotPresent
+        name: dubbo-jar
+        lifecycle:
+          postStart:
+            exec:
+              command:
+                - "mv"
+                - "/app/"
+                - "/dubbo/"
+        volumeMounts:
+        - mountPath: /dubbo
+          name: app-volume
+      - image: docker.io/yangkai/dubbo-jdk
+        resources:
+          limits:
+            cpu: 200m
+            memory: 200Mi
+          requests:
+            cpu: 100m
+            memory: 100Mi
+        imagePullPolicy: IfNotPresent
+        name: dubbo-jdk
+        command: ["sh","-c","/dubbo/app/bin/start-docker.sh"]
+        volumeMounts:
+        - mountPath: /dubbo
+          name: app-volume
+        - mountPath: /mnt
+          name: config-volume
+        ports:
+        - containerPort: 8080
+      volumes:
+      - name: app-volume
+        emptyDir: {}
+      - name: config-volume
+        configMap:
+          name: dubbo-config
