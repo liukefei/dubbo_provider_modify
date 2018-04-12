@@ -1,5 +1,5 @@
 FROM docker.io/busybox:latest
 
-COPY ./delivery  /
+ADD ./app /
 
 CMD "tail" "-f" "/dev/null"
