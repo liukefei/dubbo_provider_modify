@@ -1,6 +1,6 @@
 FROM docker.io/busybox:latest
 
-ADD ./app /
+COPY ./app /
 
 RUN tar xvf dubbo-demo-provider-2.5.3-assembly.tar.gz
 
