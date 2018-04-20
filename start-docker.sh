@@ -23,6 +23,8 @@ fi
 
 if [ -n "$SERVER_PORT" ]; then
     SERVER_PORT_COUNT=`netstat -tln | grep $SERVER_PORT | wc -l`
+    if [ $SERVER_PORT_COUNT -gt 0 ]; then
+        echo "ERROR: The $SERVER_NAME port $SERVER_PORT already used!"
         exit 1
     fi
 fi
